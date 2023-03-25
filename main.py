@@ -33,6 +33,27 @@ def prize_share_pct(share):
 df_data['share_pct'] = df_data['prize_share'].apply(prize_share_pct)
 
 # create donut chart showing how many prizes went to men compared to how many prizes went to women
-sex_data = df_data['sex'].value_counts()
+fig = px.pie(df_data[df_data['sex'].notna()],
+       names='sex',
+       title="Percentage of Male vs. Female Laureates",
+       hole=0.4,)
 
+fig.show()
+
+# find details about the first 3 female Nobel laureates
+df_data[df_data.sex == 'Female'].sort_values('year', ascending=True)[:3]
+
+# find laureates who won the Nobel Prize mutliple times
+multiple_winners = df_data[df_data.duplicated(subset=['full_name'], keep=False)]
+multiple_winners['full_name'].unique()
+
+# create a bar chart with the number of prizes awarded by category
+cat_hist = px.histogram(df_data,x='category',color='category',title='Number of Prizes Awarded per Category')
+cat_hist.update_xaxes(categoryorder='total descending')
+cat_hist.show()
+
+# create a bar chart that shows the split between men and women by category
+cat_hist = px.histogram(df_data,x='category',color='sex',title='Number of Prizes Awarded per Category')
+cat_hist.update_xaxes(categoryorder='total descending')
+cat_hist.show()
 
